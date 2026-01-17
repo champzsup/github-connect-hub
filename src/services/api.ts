@@ -1,4 +1,4 @@
-// API Configuration
+// API Configuration - Set your backend URL here
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 // Request options type
@@ -31,12 +31,6 @@ async function request<T>(
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
   };
-
-  // Add auth token if available
-  const token = localStorage.getItem('auth_token');
-  if (token) {
-    defaultHeaders['Authorization'] = `Bearer ${token}`;
-  }
 
   try {
     const response = await fetch(url, {
@@ -89,14 +83,6 @@ export const api = {
 
   delete: <T>(endpoint: string) =>
     request<T>(endpoint, { method: 'DELETE' }),
-};
-
-// Auth helpers
-export const auth = {
-  setToken: (token: string) => localStorage.setItem('auth_token', token),
-  getToken: () => localStorage.getItem('auth_token'),
-  removeToken: () => localStorage.removeItem('auth_token'),
-  isAuthenticated: () => !!localStorage.getItem('auth_token'),
 };
 
 export default api;
