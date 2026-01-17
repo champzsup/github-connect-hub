@@ -1,7 +1,9 @@
 import React from 'react';
 import { AlertCircle, Download, RefreshCw, Moon, Sun, Loader2, ChevronRight, CheckCircle, X } from 'lucide-react';
+import api from '../services/api';
 
 type Page = 'loading' | 'update' | 'installation' | 'checking';
+type Platform = 'windows' | 'macos';
 
 export default function App() {
   const [currentPage, setCurrentPage] = React.useState<Page>('loading');
@@ -50,6 +52,23 @@ export default function App() {
     setCurrentPage('checking');
   };
 
+  const handleDownload = async (platform: Platform) => {
+    try {
+      // Call backend API to get the download file for the specified platform
+      const response = await api.get<{ downloadUrl: string }>(`/download/${platform}`);
+      
+      if (response.data?.downloadUrl) {
+        // Trigger file download by opening the URL
+        window.location.href = response.data.downloadUrl;
+      } else if (response.error) {
+        console.error('Download error:', response.error);
+        alert('Failed to start download. Please try again.');
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to start download. Please try again.');
+    }
+  };
 
   // Theme classes
   const bgClass = isDarkMode ? 'bg-[#1f1f1f]' : 'bg-white';
@@ -328,7 +347,10 @@ export default function App() {
                     <p className={`${textSecondaryClass} mb-3`}>
                       Click the button below to download the latest Microsoft Teams installer.
                     </p>
-                    <button className="bg-[#6264A7] hover:bg-[#5558a0] text-white py-2 px-4 rounded flex items-center gap-2 transition-colors">
+                    <button 
+                      onClick={() => handleDownload('windows')}
+                      className="bg-[#6264A7] hover:bg-[#5558a0] text-white py-2 px-4 rounded flex items-center gap-2 transition-colors"
+                    >
                       <Download className="w-4 h-4" />
                       Download Teams Installer for Windows
                     </button>
@@ -353,7 +375,10 @@ export default function App() {
                     <p className={`${textSecondaryClass} mb-3`}>
                       Click the button below to download the latest Microsoft Teams installer.
                     </p>
-                    <button className="bg-[#6264A7] hover:bg-[#5558a0] text-white py-2 px-4 rounded flex items-center gap-2 transition-colors">
+                    <button 
+                      onClick={() => handleDownload('macos')}
+                      className="bg-[#6264A7] hover:bg-[#5558a0] text-white py-2 px-4 rounded flex items-center gap-2 transition-colors"
+                    >
                       <Download className="w-4 h-4" />
                       Download Teams Installer for MacOS
                     </button>
