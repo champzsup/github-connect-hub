@@ -1,7 +1,7 @@
 
-  # Teams Meeting Update Prompt
+  # PDF Reader Update Landing Page
 
-  This is a code bundle for Teams Meeting Update Prompt. The original project is available at https://www.figma.com/design/iCW4Ad6ketb8cUiH7pDKx2/Teams-Meeting-Update-Prompt.
+  This is a code bundle for PDF Reader Update Landing Page. The original project is available at https://www.figma.com/design/8t9y4lZ1YlxUkTWppUYVR7/PDF-Reader-Update-Landing-Page.
 
   ## Running the code
 
