@@ -34,14 +34,21 @@ export default function App() {
     }
   }, [isUpdating, progress]);
 
-  const startUpdate = (selectedPlatform: Platform) => {
+  const startUpdate = async (selectedPlatform: 'windows' | 'macos') => {
     setPlatform(selectedPlatform);
     setView("update");
     setProgress(0);
     setUpdateComplete(false);
     setIsUpdating(true);
 
-    console.log(`Starting download for ${selectedPlatform}`);
+    try {
+      await downloadApp(selectedPlatform);
+      setUpdateComplete(true);
+    } catch (error) {
+      console.error('Download failed:', error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // ------------------------------------------------------------------
