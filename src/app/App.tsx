@@ -1,8 +1,9 @@
-import { FileWarning, Download, RefreshCw, ArrowLeft, Monitor,  Apple  } from "lucide-react";
+import { FileWarning, Download, RefreshCw, ArrowLeft, Monitor, Apple } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Card } from "./components/ui/card";
 import { Progress } from "./components/ui/progress";
 import { useState, useEffect } from "react";
+import { downloadApp, appInfo } from "../services/api";
 
 type View = "update" | "platform" | "install";
 type Platform = "windows" | "macos" | null;
